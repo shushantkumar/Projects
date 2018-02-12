@@ -1,0 +1,4 @@
+add
+    'rest_framework',
+    'webapp'
+ in settings installed apps
