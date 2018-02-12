@@ -63,7 +63,7 @@ greet_date() -> [Hd|Td] = date1(),
 				true -> io:format("Merry Christmas~n");
 				false ->
 					case ((hd(Td)==1) and (lists:last(Td)==14)) of
-						true -> io:format("Happy Uttarayan~n");
+						true -> io:format("Happy Makar Sankranti~n");
 						false -> 
 							case ((hd(Td)==1) and (lists:last(Td)==1)) of
 								true -> io:format("Happy New year~n");
