@@ -1,0 +1,22 @@
+
+{% block body %}
+<h2>Here are all Artists</h2>
+{% if object_list %}
+<ul>
+    {% for artist in object_list %}
+    <li>
+         {{ artist.artistName }}
+         {{ artist.artistAge}}
+         {{ artist.artistNationality}}
+         {{ artist.artistInterest}}
+         {{ artist.id}}
+
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<h3>Please add some albums to your list</h3>
+{% endif%}
+{% endblock %}
+
+
