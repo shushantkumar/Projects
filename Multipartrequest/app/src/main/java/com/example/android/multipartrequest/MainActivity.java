@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -15,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.NoConnectionError;
 import com.android.volley.Request;
@@ -34,13 +36,17 @@ public class MainActivity extends AppCompatActivity {
     Button upload;
     ImageView imageView;
     TextView textView;
-    String url = "http://10.50.22.56:8000/stocks/";
+        String url;
     EditText urlText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        textView = (TextView) findViewById(R.id.textView);
+        urlText = (EditText) findViewById(R.id.url);
+//        String  k =  urlText.getText().toString();
 
 
         upload = (Button) findViewById(R.id.upload);
@@ -62,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 100 && resultCode == RESULT_OK && data != null) {
             Uri selectedImageUri = data.getData();
+            url = "http://" + urlText.getText().toString() +   ":8000/stocks/";
             if (null != selectedImageUri) {
                 // Get the path from the Uri
                 String path = getPathFromURI(selectedImageUri);
@@ -99,8 +106,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(NetworkResponse response) {
                 String resultResponse = new String(response.data);
+
                 textView = (TextView) findViewById(R.id.textView);
-                textView.setText(resultResponse);
+                String  p = String.valueOf(resultResponse.charAt(2));
+                textView.setText(p);
+                textView.setTextSize(120);
                // Toast.makeText(AfterLogin.this, resultResponse, Toast.LENGTH_SHORT).show();
             }
         }, new Response.ErrorListener() {
@@ -108,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                 NetworkResponse networkResponse = error.networkResponse;
                 String errorMessage = "Unknown error";
+                textView.setText(error.toString());
                 if (networkResponse == null) {
                     if (error.getClass().equals(TimeoutError.class)) {
                         errorMessage = "Request timeout";
@@ -158,5 +169,11 @@ public class MainActivity extends AppCompatActivity {
 
         };
         SingletonRequestQueue.getInstance(this).addToRequestQueue(multipartRequest);
+
+        multipartRequest.setRetryPolicy(new DefaultRetryPolicy(
+                300000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        ));
     }
 }
